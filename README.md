@@ -8,12 +8,7 @@ Uses `exfmt` to format your elixir code automatically
 
 ## Requirements
 
-* Install `exfmt` in the `mix` project you're working on.
-* Currently the best way to install `exfmt` is from github in your `mix.exs` file
-
-```elixir
-{:exfmt, github: "lpil/exfmt"},
-```
+* Install [exfmt](https://github.com/lpil/exfmt) in the `mix` project you're working on.
 
 
 ## Known Issues
@@ -22,6 +17,10 @@ Uses `exfmt` to format your elixir code automatically
 
 ## Release Notes
 
+
+## 0.0.2
+
+Support for error messages
 ## 0.0.1
 
 Initial alpha release

@@ -1,26 +1,27 @@
 'use strict';
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
-import cp = require('child_process');
+import * as vscode from 'vscode'
+import cp = require('child_process')
 
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-    const formatDocument = function(document: vscode.TextDocument): Thenable<vscode.TextEdit[]> {
+    const formatDocument = function (document: vscode.TextDocument): Thenable<vscode.TextEdit[]> {
         return new Promise((resolve, reject) => {
-            let filename = document.fileName;
-            var cmd = `mix exfmt ${document.fileName}`;
-            console.log(`cmd line:${cmd}`);
+            let filename = document.fileName
+            var cmd = `mix exfmt ${document.fileName}`
+            console.log(`cmd line:${cmd}`)
             const cwd = (vscode.workspace.rootPath) ? vscode.workspace.rootPath : ''
             cp.exec(cmd, {
                 cwd
             }, function (error, stdout, stderr) {
-
-                console.log(`stderr: ${stderr}`);
                 if (error !== null) {
-                    console.log(`exec error: ${error}`);
+                    const message = `Cannot format due to syntax errors.: ${stderr}`
+                    console.log(`exec error: ${stderr}`)
+                    vscode.window.showErrorMessage(message)
+                    return reject(message)
                 } else {
                     let textEdits: vscode.TextEdit[] = [];
                     let documentEndPosition: vscode.Position =
@@ -38,14 +39,14 @@ export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "vscode-exfmt" is now active!');
 
     let formatter = vscode.languages.registerDocumentFormattingEditProvider('elixir', {
-            provideDocumentFormattingEdits: function(document: vscode.TextDocument, options: vscode.FormattingOptions, token: vscode.CancellationToken): Thenable<vscode.TextEdit[]> {
-                return document.save().then(() => {
-                    return formatDocument(document);
-                });
-            }
-        },
+        provideDocumentFormattingEdits: function (document: vscode.TextDocument, options: vscode.FormattingOptions, token: vscode.CancellationToken): Thenable<vscode.TextEdit[]> {
+            return document.save().then(() => {
+                return formatDocument(document)
+            });
+        }
+    },
     );
-    context.subscriptions.push(formatter);
+    context.subscriptions.push(formatter)
 }
 
 // this method is called when your extension is deactivated
